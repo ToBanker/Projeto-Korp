@@ -1,0 +1,28 @@
+{
+  "title": "Monitoramento - Projeto Korp",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Disponibilidade do Serviço (UP/DOWN)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "up{job=\"projeto-korp\"}" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "ONLINE", "color": "green" }, "0": { "text": "OFFLINE", "color": "red" } } }
+          ]
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Volume de Requisições",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "http_requests_total" }
+      ]
+    }
+  ]
+}

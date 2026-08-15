@@ -1,0 +1,54 @@
+---
+- name: Provisionamento Total do Desafio Korp
+  hosts: todos
+  become: yes
+  vars:
+    app_dir: /opt/projeto-korp
+
+  tasks:
+    - name: Instalar o Docker e Docker Compose
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+          - python3-docker
+        state: present
+        update_cache: yes
+
+    - name: Garantir que o serviço do Docker está rodando
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Criar a pasta do projeto no servidor de destino
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+
+    - name: Copiar código-fonte, configurações do NGINX, Grafana e Prometheus para o servidor
+      copy:
+        src: ../
+        dest: "{{ app_dir }}"
+
+    - name: Fazer o build e subir todos os containers
+      command: docker compose up --build -d
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Aguardar 5 segundos para o NGINX e a aplicação subirem completamente
+      pause:
+        seconds: 5
+
+    - name: Validar o funcionamento (Requisição HTTP)
+      uri:
+        url: http://localhost/projeto-korp
+        method: GET
+        return_content: yes
+      register: teste_da_api
+
+    - name: Exibir a resposta do JSON no console
+      debug:
+        msg: "Desafio Finalizado com Sucesso! Resposta da API: {{ teste_da_api.content }}"

@@ -1,0 +1,11 @@
+apiVersion: 1
+providers:
+  - name: 'Dashboards Korp'
+    orgId: 1
+    folder: 'Desafio Korp'
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    options:
+      # Caminho onde os arquivos JSON vão ficar dentro do container
+      path: /var/lib/grafana/dashboards
